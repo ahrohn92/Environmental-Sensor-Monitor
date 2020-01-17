@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Equipment Sensors</title>
+        <link rel="stylesheet" type="text/css" href="/static/style.css">
+        <script src="/static/socket.io.js"></script>
+        <script src="/static/Chart.min.js"></script>
+        <script src="/static/jquery.js"></script>
+    </head>
+    <body>
+        <div class="container">
+        <!-- TMARS MONITOR-->
+        <div class="equip-monitor" id="TMARS-monitor">
+            <table width="100%">
+                <th colspan="4" class="header"><div id="equipName">TMARS</div><div class="ipAddr" id="TMARS-ipAddr" onclick="openModal(id)"></div></th>
+                <tr>
+                    <th>Temperature</th>
+                    <th>Humidity</th>
+                    <th>Pressure</th>
+                    <th>Alarm</th>
+                </tr>
+                <tr>
+                    <td align="center" class="settings" id="TMARS-temp" onclick="openModal(id)"></td>
+                    <td align="center" class="settings" id="TMARS-hum" onclick="openModal(id)"></td>
+                    <td align="center" class="settings" id="TMARS-psi" onclick="openModal(id)"></td>
+                    <td align="center">Mute <input type="checkbox" class="checkbox" id="TMARS-alarm"></td>
+                </tr>
+            </table>
+        </div>
+        <br><br>
+
+        <!-- EC1 MONITOR -->
+        <div class="equip-monitor" id="EC1-monitor">
+            <table width="100%">
+                <th colspan="3" class="header"><div id="equipName">EC1</div><div class="ipAddr" id="EC1-ipAddr" onclick="openModal(id)"></div></th>
+                <tr>
+                    <th>Temperature</th>
+                    <th>Humidity</th>
+                    <th>Alarm</th>
+                </tr>
+                <tr>
+                    <td align="center" class="settings" id="EC1-temp" onclick="openModal(id)"></td>
+                    <td align="center" class="settings" id="EC1-hum" onclick="openModal(id)"></td>
+                    <td align="center">Mute <input type="checkbox" class="checkbox" id="EC1-alarm"></td>
+                </tr>
+            </table>
+        </div>
+        <br><br>
+
+        <!-- EC2 MONITOR -->
+        <div class="equip-monitor" id="EC2-monitor">
+            <table width="100%">
+                <th colspan="3" class="header"><div id="equipName">EC2</div><div class="ipAddr" id="EC2-ipAddr" onclick="openModal(id)"></div></th>
+                <tr>
+                    <th>Temperature</th>
+                    <th>Humidity</th>
+                    <th>Alarm</th>
+                </tr>
+                <tr>
+                    <td align="center" class="settings" id="EC2-temp" onclick="openModal(id)"></td>
+                    <td align="center" class="settings" id="EC2-hum" onclick="openModal(id)"></td>
+                    <td align="center">Mute <input type="checkbox" class="checkbox" id="EC2-alarm"></td>
+                </tr>
+            </table>
+        </div>
+        <br><br>
+            
+        <!-- NGPS MONITOR -->
+        <div class="equip-monitor" id="NPGS-monitor">
+            <table width="100%">
+                <th colspan="3" class="header"><div id="equipName">NGPS</div><div class="ipAddr" id="NGPS-ipAddr" onclick="openModal(id)"></div></th>
+                <tr>
+                    <th>Temperature</th>
+                    <th>Humidity</th>
+                    <th>Alarm</th>
+                </tr>
+                <tr>
+                    <td align="center" class="settings" id="NGPS-temp" onclick="openModal(id)"></td>
+                    <td align="center" class="settings" id="NGPS-hum" onclick="openModal(id)"></td>
+                    <td align="center">Mute <input type="checkbox" class="checkbox" id="NGPS-alarm"></td>
+                </tr>
+            </table>
+        </div>
+        <br><br>
+
+        <!-- MIPS #1 MONITOR -->
+        <div class="equip-monitor" id="MIPS#1-monitor">
+            <table width="100%">
+                <th colspan="3" class="header"><div id="equipName">MIPS #1</div><div class="ipAddr" id="MIPS1-ipAddr" onclick="openModal(id)"></div></th>
+                <tr>
+                    <th>Temperature</th>
+                    <th>Humidity</th>
+                    <th>Alarm</th>
+                </tr>
+                <tr>
+                    <td align="center" class="settings" id="MIPS1-temp" onclick="openModal(id)"></td>
+                    <td align="center" class="settings" id="MIPS1-hum" onclick="openModal(id)"></td>
+                    <td align="center">Mute <input type="checkbox" class="checkbox" id="MIPS1-alarm"></td>
+                </tr>
+            </table>
+        </div>
+        <br><br>
+
+        <!-- MIPS #2 MONITOR -->
+        <div class="equip-monitor" id="MIPS#2-monitor">
+            <table width="100%">
+                <th colspan="3" class="header"><div id="equipName">MIPS #2</div><div class="ipAddr" id="MIPS2-ipAddr" onclick="openModal(id)"></div></th>
+                <tr>
+                    <th>Temperature</th>
+                    <th>Humidity</th>
+                    <th>Alarm</th>
+                </tr>
+                <tr>
+                    <td align="center" class="settings" id="MIPS2-temp" onclick="openModal(id)"></td>
+                    <td align="center" class="settings" id="MIPS2-hum" onclick="openModal(id)"></td>
+                    <td align="center">Mute <input type="checkbox" class="checkbox" id="MIPS2-alarm"></td>
+                </tr>
+            </table>
+        </div>
+        <br>
+        
+        <!-- ACKNOWLEDGE / TEST ALARM BUTTONS -->
+        <div align="center">
+            <button onclick="acknowledgeAlarm()">Acknowledge Alarm</button><button onclick="soundAlarm()">Test Alarm</button>
+        </div>
+
+        <!-- MODAL FOR TEMPERATURE SETTINGS -->
+        <div class="modal" id="temp-settings-modal">
+            <div class="modal-content">
+                <span class="closeModal" onclick="closeModal()">&times;</span>
+                <h1 align="center" id="temp-modal-title"></h1>
+                Show:
+                <select id="time-selection" onchange="openChart()">
+                    <option value="1">1 Day</option>
+                    <option value="7" selected="selected">1 Week</option>
+                    <option value="30">1 Month</option>
+                    <option value="180">6 Months</option>
+                    <option value="365">1 Year</option>
+                </select>
+                <canvas id="myChart"></canvas>
+                <h3 align="center">Temperature Settings</h3>
+                <table align="center" width="50%">
+                    <th>Min Temp</th>
+                    <th>Max Temp</th>
+                    <tr>
+                        <td align="center"><input type="text" id="min-temp"></td>
+                        <td align="center"><input type="text" id="max-temp"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center"><button id="save-settings" onclick="saveSettings()">Save Settings</button></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- MODAL FOR HUMIDITY SETTINGS -->
+        <div class="modal" id="hum-settings-modal">
+            <div class="modal-content">
+                <span class="closeModal" onclick="closeModal()">&times;</span>
+                <h1 align="center" id="hum-modal-title"></h1>
+                <p align="center">LINE GRAPH GOES HERE</p>
+                <h3>Humidity Settings</h3>
+                <table align="center" width="50%">
+                    <th>Min Humidity</th>
+                    <th>Max Humidity</th>
+                    <tr>
+                        <td align="center"><input type="text" id="min-hum"></td>
+                        <td align="center"><input type="text" id="max-hum"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center"><button id="save-settings" onclick="saveSettings()">Save Settings</button></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- MODAL FOR PRESSURE SETTINGS -->
+        <div class="modal" id="psi-settings-modal">
+            <div class="modal-content">
+                <span class="closeModal" onclick="closeModal()">&times;</span>
+                <h1 align="center" id="psi-modal-title"></h1>
+                <p align="center">LINE GRAPH GOES HERE</p>
+                <h3>Pressue Settings</h3>
+                <table align="center" width="50%">
+                    <th>Min Pressure</th>
+                    <th>Max Pressure</th>
+                    <tr>
+                        <td align="center"><input type="text" id="min-psi"></td>
+                        <td align="center"><input type="text" id="max-psi"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center"><button id="save-settings" onclick="saveSettings()">Save Settings</button></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- MODAL FOR ALARM SETTINGS -->
+        <!-- <div class="modal" id="alarm-settings-modal">
+            <div class="modal-content">
+                <span class="closeModal" onclick="closeModal()">&times;</span>
+                <h1 align="center" id="alarm-modal-title"></h1>
+                <p align="center">LINE GRAPH GOES HERE</p>
+                <h3>Pressue Settings</h3>
+                <table align="center" width="50%">
+                    <th>Min Pressure</th>
+                    <th>Max Pressure</th>
+                    <tr>
+                        <td align="center"><input type="text" id="min-psi"></td>
+                        <td align="center"><input type="text" id="max-psi"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center"><button id="save-settings" onclick="saveSettings()">Save Settings</button></td>
+                    </tr>
+                </table>
+            </div>
+        </div> -->
+
+        <!-- MODAL FOR IP ADDRESS INPUT -->
+        <div class="modal" id="ip-input-modal">
+            <div align="center" class="modal-content">
+                <span class="closeModal" onclick="closeModal()">&times;</span>
+                <h2 align="center" id="ip-modal-title"></h2>
+                <label>IP Address: </label>
+                <input type="text" id="ipAddr-input">
+                <button id="connectButton" onclick="connectIPAddress()">Connect</button>
+            </div>
+        </div>
+        </div>
+        <script src="/static/app.js"></script>
+    </body>
+</html>
